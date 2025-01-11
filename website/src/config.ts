@@ -69,8 +69,8 @@ export const SIDEBAR: Sidebar = {
       { text: 'Recap', link: 'workshop/recap' },
       { text: 'Workshop in German', link: 'de/workshop/getting-started' },
       { text: 'Society of Explorers Workshop', link: 'workshop/soc-of-ex' },
-      { text: 'From-Scratch Workshop', link: 'workshop/from-scratch'},
-      { text: 'A MAZE./ Workshop', link: 'workshop/a-maze'}
+      { text: 'From-Scratch Workshop', link: 'workshop/from-scratch' },
+      { text: 'A MAZE./ Workshop', link: 'workshop/a-maze' },
     ],
     'Making Sound': [
       { text: 'Samples', link: 'learn/samples' },
