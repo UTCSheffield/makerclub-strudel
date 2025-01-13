@@ -71,6 +71,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Society of Explorers Workshop', link: 'workshop/soc-of-ex' },
       { text: 'From-Scratch Workshop', link: 'workshop/from-scratch' },
       { text: 'A MAZE./ Workshop', link: 'workshop/a-maze' },
+      { text: 'Site Gallery', link: 'workshop/site-gallery' },
     ],
     'Making Sound': [
       { text: 'Samples', link: 'learn/samples' },
