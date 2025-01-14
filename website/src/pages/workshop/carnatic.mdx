@@ -29,21 +29,89 @@ Here's an example from Manjunath B C and his son Skanda:
 This is in the _Konnakol_ tradition, where performers perform vocal rhythms using groups of syllables mostly related to the sounds of the mridangam drum. It goes fast, but they start with:
 
 ```
-Ta Takadimi
-Ta Ta Takadimi
-Ta Ta Ta Takadimi
+Tha . Thakadimi
+Tha . Tha . Thakadimi
+Tha . Tha . Tha . Thakadimi
 Tarikita Tarikita
 ```
 
-Notice the repetition of 'Ta' increasing from 1 to 3. They then repeat with the `Ta` replaced with `Dhi`:
+In the above `.` is a gap, so for example `Tha . Tha .` has a count of four. Notice the repetition of 'Ta' increasing from 1 to 3. They then repeat with the `Tha` replaced with `Dhi`, `Thom` and finally `Nam`:
 
 ```
-Dhi Takadimi
-Dhi Dhi Takadimi
-Dhi Dhi Dhi Takadimi
+Dhi . Takadimi
+Dhi . Dhi . Takadimi
+Dhi . Dhi . Dhi . Takadimi
 Tarikita Tarikita
 ```
 
-Then do the same two more times, with `Thom` and then `Nam`.
+```
+Thom . Takadimi
+Thom . Thom . Takadimi
+Thom . Thom . Thom . Takadimi
+Tarikita Tarikita
+```
 
-From there, they recite all the same syllables, but in different orders creating different patterns. If you click or clap along you can feel the rhythm structures move around creating different syncopations, but the same groups of four always add up to 16 claps/clicks (this fits the Indian metrical concept of _Tala_, in this case the _Adi Tala_).
+```
+Nam . Takadimi
+Nam . Nam . Takadimi
+Nam . Nam . Nam . Takadimi
+Tarikita Tarikita
+```
+
+From there, they recite all the same syllables, but in different orders creating different patterns. For example, if we notate the above structure in terms of the number of repetitions: `123`, then `321` would be:
+
+```
+Tha . Tha . Tha . Thakadimi
+Tha . Tha . Thakadimi
+Tha . Thakadimi
+Tarikita Tarikita
+```
+
+If you click or clap along every fourth syllable (including the gaps), you can feel the rhythm structures move around creating different syncopations (the use of 'weak' off-beats), but the same groups of four always add up to 16 claps/clicks (this fits the Indian metrical concept of _Tala_, in this case the _Adi Tala_).
+
+So from these two possibilities ...
+
+```
+   Tha  Dhi  Thom  Nam
+1. 123  123  123  123
+2. 321  321  321  321
+```
+
+... there are a lot more possibilities that Manjunath and Skanda explore in their video:
+
+```
+3. 123 321 123 321
+4. 321 123 321 123
+5. 222 222 222 222
+6. 111 222 333 123
+7. 333 222 111 321
+```
+
+_Special thanks to B C Manjunath for sharing and explaining this pattern to me._
+
+<MiniRepl
+  client:visible
+  tune={`// "Konnakol exercise by Somashekar Jois via B C Manjunath and Skanda Manjunath" @by alex
+// https://www.youtube.com/watch?v=alJ_st3PkBk
+samples('github:yaxu/mrid/main');
+
+setcps(0.7)
+
+let rhythm = (counts, drum) =>
+s_cat(counts.stepBind(count => s_cat(drum.s_extend(count), "dhi thom thom dhi")),
+"tha tha:1 ka tha tha tha:1 ka tha"
+).sound()
+
+rhythm: s_cat(
+rhythm("1 2 3", "tha -"),
+rhythm("1 2 3", "dhi -"),
+rhythm("1 2 3", "thom -"),
+rhythm("1 2 3", "nam -"),
+).steps(8);
+
+click: sound("hh\*2")
+.bank("RolandTR808")
+`}
+dirt
+punchcard
+/>
