@@ -29,41 +29,41 @@ Here's an example from Manjunath B C and his son Skanda:
 This is in the _Konnakol_ tradition, where performers perform vocal rhythms using groups of syllables mostly related to the sounds of the mridangam drum. It goes fast, but they start with:
 
 ```
-Tha . Thakadimi
-Tha . Tha . Thakadimi
-Tha . Tha . Tha . Thakadimi
+Tha - Thakadimi
+Tha - Tha - Thakadimi
+Tha - Tha - Tha - Thakadimi
 Tarikita Tarikita
 ```
 
-In the above `.` is a gap, so for example `Tha . Tha .` has a count of four. Notice the repetition of 'Ta' increasing from 1 to 3. They then repeat with the `Tha` replaced with `Dhi`, `Thom` and finally `Nam`:
+In the above the dashes (like '`-`') stand for a gap, so for example `Tha - Tha -` has a count of four. Notice the repetition of 'Ta' increasing from 1 to 3. They then repeat with the `Tha` replaced with `Dhi`, `Thom` and finally `Nam`:
 
 ```
-Dhi . Takadimi
-Dhi . Dhi . Takadimi
-Dhi . Dhi . Dhi . Takadimi
-Tarikita Tarikita
-```
-
-```
-Thom . Takadimi
-Thom . Thom . Takadimi
-Thom . Thom . Thom . Takadimi
+Dhi - Takadimi
+Dhi - Dhi . Takadimi
+Dhi - Dhi - Dhi - Takadimi
 Tarikita Tarikita
 ```
 
 ```
-Nam . Takadimi
-Nam . Nam . Takadimi
-Nam . Nam . Nam . Takadimi
+Thom - Takadimi
+Thom - Thom - Takadimi
+Thom - Thom - Thom - Takadimi
+Tarikita Tarikita
+```
+
+```
+Nam - Takadimi
+Nam - Nam - Takadimi
+Nam - Nam - Nam - Takadimi
 Tarikita Tarikita
 ```
 
 From there, they recite all the same syllables, but in different orders creating different patterns. For example, if we notate the above structure in terms of the number of repetitions: `123`, then `321` would be:
 
 ```
-Tha . Tha . Tha . Thakadimi
-Tha . Tha . Thakadimi
-Tha . Thakadimi
+Tha - Tha - Tha - Thakadimi
+Tha - Tha - Thakadimi
+Tha - Thakadimi
 Tarikita Tarikita
 ```
 
@@ -89,6 +89,8 @@ So from these two possibilities ...
 
 _Special thanks to B C Manjunath for sharing and explaining this pattern to me._
 
+The above rhythm is a bit difficult to express in strudel, but below is an attempt.
+
 <MiniRepl
   client:visible
   tune={`// "Konnakol exercise by Somashekar Jois via B C Manjunath and Skanda Manjunath" @by alex
@@ -97,20 +99,29 @@ samples('github:yaxu/mrid/main');
 
 setcps(0.7)
 
-let rhythm = (counts, drum) =>
-s_cat(counts.stepBind(count => s_cat(drum.s_extend(count), "dhi thom thom dhi")),
-"tha tha:1 ka tha tha tha:1 ka tha"
-).sound()
+let rhythm = (counts, drum) => 
+  s_cat(counts.stepBind(count => s_cat(drum.s_extend(count), 
+                                       "dhi thom thom dhi")),
+        "tha tha:1 ka tha tha tha:1 ka tha"
+       ).sound()
 
-rhythm: s_cat(
-rhythm("1 2 3", "tha -"),
-rhythm("1 2 3", "dhi -"),
-rhythm("1 2 3", "thom -"),
-rhythm("1 2 3", "nam -"),
+$: s_cat(
+    rhythm("1 2 3", "tha -"),
+    rhythm("1 2 3", "dhi -"),
+    rhythm("1 2 3", "thom -"),
+    rhythm("1 2 3", "nam -"),
 ).steps(8);
 
-click: sound("hh\*2")
-.bank("RolandTR808")
+click: sound("hh\*2").bank("RolandTR808")
 `}
 dirt
 />
+
+You can try the different variations of the rhythm by editing the code in lines numbered 14-17 above, for example to try variation 7 (`333 222 111 321`), you would change the code to:
+
+```
+    rhythm("3 3 3", "tha -"),
+    rhythm("2 2 2", "dhi -"),
+    rhythm("1 1 1", "thom -"),
+    rhythm("3 2 1", "nam -"),
+```
