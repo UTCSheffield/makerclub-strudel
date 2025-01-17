@@ -13,7 +13,7 @@ Strudel (via its predecessor TidalCycles) is partly inspired by another system c
 
 Algorithmic music has a particularly strong connection to _South_ Indian, Carnatic music traditions, which feature intricate rhythms featuring geometric patterns and numberical transformations.
 
-Here's an example from Manjunath B C and his son Skanda:
+Here's an example from Manjunath B C and his son Skanda. It's incredibly fast, but lets try to understand it!
 
 <iframe
   width="560"
@@ -35,7 +35,9 @@ Tha - Tha - Tha - Thakadimi
 Tarikita Tarikita
 ```
 
-In the above the dashes (like '`-`') stand for a gap, so for example `Tha - Tha -` has a count of four. Notice the repetition of 'Ta' increasing from 1 to 3. They then repeat with the `Tha` replaced with `Dhi`, `Thom` and finally `Nam`:
+In the above the dashes (like '`-`') stand for a gap, so for example `Tha - Tha -` has a count of four. Notice the repetition of 'Tha' increasing from 1 to 3 over the first three lines. 
+
+They then repeat the same structure, but with the `Tha` replaced with `Dhi`, `Thom` and finally `Nam`:
 
 ```
 Dhi - Takadimi
@@ -67,8 +69,6 @@ Tha - Thakadimi
 Tarikita Tarikita
 ```
 
-If you click or clap along every fourth syllable (including the gaps), you can feel the rhythm structures move around creating different syncopations (the use of 'weak' off-beats), but the same groups of four always add up to 16 claps/clicks (this fits the Indian metrical concept of _Tala_, in this case the _Adi Tala_).
-
 So from these two possibilities ...
 
 ```
@@ -89,7 +89,7 @@ So from these two possibilities ...
 
 _Special thanks to B C Manjunath for sharing and explaining this pattern to me._
 
-The above rhythm is a bit difficult to express in strudel, but below is an attempt.
+The above rhythm is a bit difficult to express in strudel! But here is an attempt:
 
 <MiniRepl
   client:visible
@@ -117,6 +117,10 @@ click: sound("hh\*2").bank("RolandTR808")
 dirt
 />
 
+You might find it easier to <a href="https://strudel.cc/?znWJKOf2zMAL" target="_new">open this in the main strudel editor</a>.
+
+If you click or clap along with the 'hh' (high hat) sound you should start to feel the rhythm move around, creating the feeling of syncopation when 'off-beats' are created. You could also try clapping using the gestures of the traditional <a href="https://www.youtube.com/watch?v=Nqo5Jlqvj_0&t=146s">eight-beat 'Adi Tala' cycle</a>.
+
 You can try the different variations of the rhythm by editing the code in lines numbered 14-17 above, for example to try variation 7 (`333 222 111 321`), you would change the code to:
 
 ```
@@ -125,3 +129,7 @@ You can try the different variations of the rhythm by editing the code in lines 
     rhythm("1 1 1", "thom -"),
     rhythm("3 2 1", "nam -"),
 ```
+
+## Resources
+
+If you're curious to find out more, here's [a blog post article](https://algorithmicpattern.org/patterns-in-konnakol/) with more strudel examples. Be sure to check the videos and links at the bottom!
