@@ -72,6 +72,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'From-Scratch Workshop', link: 'workshop/from-scratch' },
       { text: 'A MAZE./ Workshop', link: 'workshop/a-maze' },
       { text: 'Site Gallery', link: 'workshop/site-gallery' },
+      { text: 'Strudel basics for Pattern Club', link: 'workshop/strudel-basics'},
       { text: 'Carnatic Rhythms', link: 'workshop/carnatic' },
     ],
     'Making Sound': [
