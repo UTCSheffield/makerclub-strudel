@@ -1,0 +1,178 @@
+---
+title: Movement with Strudel
+layout: ../../layouts/MainLayout.astro
+---
+
+import { MiniRepl } from '@src/docs/MiniRepl';
+import Box from '@components/Box.astro';
+import QA from '@components/QA';
+
+# Controlling motors with Strudel
+
+Strudel is made for making music, but it's possible to pattern other things with it.
+
+We're going to use a microcontroller for this, called an "[Inventor
+2040W](https://shop.pimoroni.com/products/inventor-2040-w)", which is
+a [Pico
+W](https://shop.pimoroni.com/products/inventor-2040-w?variant=40053063155795)
+with extra ports added including some for controlling motors.
+
+## Technical details
+
+Feel free to gloss over these!
+
+- The Inventor 2040W connects to the internet wirelessly. It's powered via USB but you don't have to plug it into a laptop, and you can even power it from a battery.
+- It's running [some
+  code](https://github.com/patternclub/alpacalab/blob/main/course/main.py)
+  that listens for messages using an "Internet of Things" network
+  protocol (called MQTT). When it receives a message, it moves a motor.
+- It connects to a small server (running software called 'mosquitto') in our studio. You can also configure it to connect to another server if you want to use it outside out the studio - it's a bit fiddly, but I'll put some info below.
+- Strudel can send these messages instead of triggering sounds - that's how we're going to use it to pattern movement!.
+
+## First movement
+
+1. Note the letter drawn on a label on the back of the microcontroller. Ask me (Alex) if my handwriting is unclear!
+
+2. Plug your microcontroller into USB power
+
+3. Plug a motor into 'servo' plug numbered 1, with the brown (darkest) cable outward, i.e. with the yellow (lightest) cable closest to the '1'
+
+4. Run the below to set up some values, changing the `x` in `/move/x` to the letter on your microcontroller.
+
+<MiniRepl
+  client:visible
+  tune={`
+// This adds the 'move' and 'motor' commands to strudel
+const {move, motor} = createParams('move', 'motor');
+window.move = move; window.motor = motor;
+// Change 'x' in /move/x to the letter on the back of your microcontroller
+window.path = '/move/x'
+silence
+  `}
+/>
+
+If you refresh the page, you'll need to change and run the above again before the following patterns work.
+
+<Box>
+
+If your motor starts moving unexpectedly, someone else might have put your letter in the /move/ line by mistake!!
+
+</Box>
+
+5. Run the below. It will ask for a password, which is set to be the
+   same as the alpacalab wifi password. Hopefully your motor will then start
+   to move!
+
+<MiniRepl
+  client:visible
+  tune={`
+move("-10 0 10").motor("0").slow(2) 
+  // This line sends the pattern to the microcontroller, via a server.
+  .mqtt('alpaca', undefined, path, 'wss://sponge.algorithmicpattern.org:443/mqtt');
+  `}
+/>
+
+<Box>
+
+Note that in the above, we start counting motors from '0', so motor 1 on the board is motor 0 in the code.
+
+</Box>
+
+## Using the main strudel interface
+
+If you want to work in the main strudel 'repl', [click here](http://strudel.cc/#Ly8gdGhpcyBzZXRzIHRoaW5ncyB1cCBzbyB3ZSBjYW4gY3JlYXRlICdtb3ZlJyBhbmQgJ21vdG9yJyBwYXR0ZXJucwpjb25zdCB7bW92ZSwgbW90b3J9ID0gY3JlYXRlUGFyYW1zKCdtb3ZlJywgJ21vdG9yJyk7Ci8vIENoYW5nZSAneCcgaW4gL21vdmUveCB0byB0aGUgbGV0dGVyIG9uIHRoZSBiYWNrIG9mIHlvdXIgbWljcm9jb250cm9sbGVyCmNvbnN0IHBhdGggPSAnL21vdmUveCcKCm1vdmUoIi0xMCAwIDEwIikubW90b3IoMCkuc2xvdygyKSAKICAvLyBUaGlzIGxpbmUgc2VuZHMgdGhlIHBhdHRlcm4gdG8gdGhlIG1pY3JvY29udHJvbGxlciwgdmlhIGEgc2VydmVyLgogIC5tcXR0KCdhbHBhY2EnLCB1bmRlZmluZWQsIHBhdGgsICd3c3M6Ly9zcG9uZ2UuYWxnb3JpdGhtaWNwYXR0ZXJuLm9yZzo0NDMvbXF0dCcpOwo%3D) for a starting point with the set-up code and movement code together.
+
+## Patterning movement
+
+Many strudel features for playing with sound patterns will work when
+playing with motor patterns! Try playing with the mininotation in the
+`move` command:
+
+<MiniRepl
+  client:visible
+  tune={`
+move("-10 0 10 [20 30]*2")
+  .motor("0").slow(2) 
+  // This line sends the pattern to the microcontroller, via a server.
+  .mqtt('alpaca', undefined, path, 'wss://sponge.algorithmicpattern.org:443/mqtt');
+  `}
+/>
+
+The move instructions are in the range from -90 to 90.
+
+<box>
+  If your motors stop working at some point, and your code looks right, try pressing the 'reset' button on the
+  microcontroller.
+</box>
+
+It's possible to make smooth movements based on different 'waveforms', for example a smooth sinewave:
+
+<MiniRepl
+  client:visible
+  tune={`
+move(sine.range(-30, 30).segment(16))
+  .motor("0").slow(2) 
+  .mqtt('alpaca', undefined, path, 'wss://sponge.algorithmicpattern.org:443/mqtt');
+  `}
+/>
+
+The movement is still quite jerky, because the 'segment' command is
+only taking 16 positions from the sinewave. Try increasing it to 32 or 64. It's best not too much higher than that, as the microcontroller
+might get overwhelmed with a backlog of instructions!
+
+<box>
+  Try replacing `sine` with other waveforms: `saw` (sawtooth wave), `tri` (triangular wave) are good, and there is also
+  `rand` (random wave) and `perlin` (a kind of smoothed-out randomness).
+</box>
+
+## Patterning more than one motor
+
+You can pattern the `motor` command separately from the `move` one:
+
+<MiniRepl
+  client:visible
+  tune={`
+move("-10 0 10 [20 30]*2")
+  .motor("0 1").slow(2) 
+  .mqtt('alpaca', undefined, path, 'wss://sponge.algorithmicpattern.org:443/mqtt');
+  `}
+/>
+
+Alternatively, you can pattern two motors independently, using the `stack` command. The below sends the same pattern for the first two motors, but with the second one running slower:
+
+<MiniRepl
+  client:visible
+  tune={`
+stack(
+  move("-10 0 10 [20 30]*2")
+    .motor("0").slow(2) ,
+  move("-10 0 10 [20 30]*2")
+    .motor("1").slow(3)
+)
+  .mqtt('alpaca', undefined, path, 'wss://sponge.algorithmicpattern.org:443/mqtt');
+  `}
+/>
+
+## Patterns of patterns!
+
+Once you have three patterns you like, you can give them names like 'a', 'b' and 'c', and then pattern them with the `pick command.
+
+<MiniRepl
+  client:visible
+  tune={`let a = move("20 [-10 10] 30 35 40").motor(0)
+  .off(0.25, x => x.motor(1));
+
+let b =
+stack(move(sine.segment(64).range(30, -30))
+.motor(0),
+move(sine.segment(64).range(40, -40).slow(1.5))
+.motor(1)
+)
+
+let c = move(perlin.range(20,-20).fast(2).segment(64))
+.motor("0,1");
+
+"<a a a b b b b b c c c c>".pick({a,b,c})
+.mqtt('alpaca', undefined, path, 'wss://sponge.algorithmicpattern.org:443/mqtt');
+`}
+/>
