@@ -12,3 +12,4 @@ pnpm-workspace.yaml
 **/dev-dist
 website/.astro
 **/carnatic.mdx
+**/motors.mdx
