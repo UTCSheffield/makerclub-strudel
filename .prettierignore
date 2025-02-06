@@ -13,3 +13,5 @@ pnpm-workspace.yaml
 website/.astro
 **/carnatic.mdx
 **/motors.mdx
+!tidal-drum-machines.json
+!tidal-drum-machines-alias.json
