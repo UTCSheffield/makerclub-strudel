@@ -75,6 +75,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Strudel basics for Pattern Club', link: 'workshop/strudel-basics' },
       { text: 'Carnatic Rhythms', link: 'workshop/carnatic' },
       { text: 'Motor Movement', link: 'workshop/motors' },
+      { text: 'Lights', link: 'workshop/lights' },
     ],
     'Making Sound': [
       { text: 'Samples', link: 'learn/samples' },

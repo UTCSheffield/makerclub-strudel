@@ -1,0 +1,211 @@
+---
+title: Lights
+layout: ../../layouts/MainLayout.astro
+---
+
+import { MiniRepl } from '@src/docs/MiniRepl';
+import Box from '@components/Box.astro';
+import QA from '@components/QA';
+
+# Controlling lights with Strudel
+
+Strudel is made for making music, but it's possible to pattern other things with it, including lights.
+
+We're going to use a microcontroller for this, called an "[Inventor
+2040W](https://shop.pimoroni.com/products/inventor-2040-w)", which is
+a [Pico
+W](https://shop.pimoroni.com/products/inventor-2040-w?variant=40053063155795). It's mainly designed for controlling motors, but here we'll use it to control lights.
+
+![image](https://shop.pimoroni.com/cdn/shop/products/Inventor2040_1of3_1500x1500_crop_center.jpg?v=1656927927)
+
+## Technical details
+
+Feel free to gloss over these!
+
+- The Inventor 2040W connects to the internet wirelessly. It's powered via USB but you don't have to plug it into a laptop, and you can even power it from a battery.
+- It's running [some
+  code](https://github.com/patternclub/alpacalab/blob/main/course/main.py)
+  that listens for messages using an "Internet of Things" network
+  protocol (called MQTT). When it receives a message, it flashes a light.
+- It connects to a small server (running software called 'mosquitto') in our studio. You can also configure it to connect to another server if you want to use it outside out the studio - it's a bit fiddly, but I can show you how.
+- Strudel can send these messages instead of triggering sounds - that's how we use it to pattern movement!
+
+## First light
+
+Let's get a light flashing!
+
+1. Note the letter drawn on a label on the back of the microcontroller.
+
+2. Plug your microcontroller into USB power
+
+3. Plug your light strip into 'servo' plug numbered 6, with the dotted (lightest) cable closest to the 6.
+
+4. Run the below to set up some values, changing the `x` in `light:x` to the letter on your microcontroller. Nothing will happen yet!
+
+<MiniRepl
+  client:visible
+  tune={`
+// Change this to match the letter on your device !
+const name = "light:x"
+
+// Code to set up extra commands including a 'send' command to
+// send patterns to your microcontrollers
+const {red, green, blue, hue, saturation, brightness, light, topic, blink}
+= createParams('hue', 'saturation', 'brightness', 'light','topic','blink');
+Pattern.prototype.lights = function() {return this.topic(name).mqtt('alpaca', undefined, undefined, 'wss://sponge.algorithmicpattern.org:443/mqtt')};
+
+silence
+`}
+/>
+
+<Box>
+
+If you refresh the page, you'll need to change and run the above again before the following patterns work.
+
+If your lights starts flashing unexpectedly, someone else might have put your letter in the light:x line by mistake!!
+
+If things stop working, try pressing the reset button on the microcontroller.
+
+</Box>
+
+5. Now, run the below. It will ask for a password, which is set to be the
+   same as the alpacalab wifi password. Hopefully your lights will then start
+   to flash!
+
+<MiniRepl
+  client:visible
+  tune={`
+color("red [yellow green] tomato pink")
+  .light("0 1 4 30")
+  .blink(true)
+  .lights()
+  `}
+/>
+
+## Using the main strudel interface
+
+If you want to work in the main strudel 'repl', [click here](/#Ly8gQ2hhbmdlIHRoaXMgdG8gbWF0Y2ggdGhlIGxldHRlciBvbiB5b3VyIGRldmljZSAhCmNvbnN0IG5hbWUgPSAibGlnaHQ6eCIKCi8vIENvZGUgdG8gc2V0IHVwIGV4dHJhIGNvbW1hbmRzIGluY2x1ZGluZyBhICdzZW5kJyBjb21tYW5kIHRvCi8vIHNlbmQgcGF0dGVybnMgdG8geW91ciBtaWNyb2NvbnRyb2xsZXJzCmNvbnN0IHtyZWQsIGdyZWVuLCBibHVlLCBodWUsIHNhdHVyYXRpb24sIGJyaWdodG5lc3MsIGxpZ2h0LCB0b3BpYywgYmxpbmt9Cj0gY3JlYXRlUGFyYW1zKCdodWUnLCAnc2F0dXJhdGlvbicsICdicmlnaHRuZXNzJywgJ2xpZ2h0JywndG9waWMnLCdibGluaycpOwpQYXR0ZXJuLnByb3RvdHlwZS5saWdodHMgPSBmdW5jdGlvbigpIHtyZXR1cm4gdGhpcy50b3BpYyhuYW1lKS5tcXR0KCdhbHBhY2EnLCB1bmRlZmluZWQsIHVuZGVmaW5lZCwgJ3dzczovL3Nwb25nZS5hbGdvcml0aG1pY3BhdHRlcm4ub3JnOjQ0My9tcXR0Jyl9OwoKCiQ6IGNvbG9yKCJyZWQgW3llbGxvdyBncmVlbl0gdG9tYXRvIHBpbmsiKQogIC5saWdodCgiMCAxIDQgMzAiKQogIC5ibGluayh0cnVlKQogIC5saWdodHMoKQo%3D) for a starting point with the set-up code and light code together.
+
+## Light rhythms
+
+If you put the 'light' command first in the pattern, that's where the 'rhythm' will come from:
+
+<MiniRepl
+  client:visible
+  tune={`
+light("0 1 2 40 15 [20 5] 30 [0 0 2, 3]")
+  .color("red blue")
+  .blink(true)
+  .lights()
+`}
+/>
+
+Remember that you have to have a `.` between commands, so if you swap the `light` and `color` commands you have to keep the `.` between them:
+
+<MiniRepl
+  client:visible
+  tune={`
+color("red blue")
+  .light("0 1 2 40 15 [20 5] 30 [0 0 2, 3]")
+  .blink(true)
+  .lights()
+`}
+/>
+
+Change 'blink' to 'false' to keep lights on until the next colour change, for example in this pattern:
+
+<MiniRepl
+  client:visible
+  tune={`
+light("0 1 6 3")
+  .color("<green blue>")
+  .blink(true)
+  .lights()
+`}
+/>
+
+## Colour names
+
+There are a [lot of standard color names available](https://upload.wikimedia.org/wikipedia/commons/e/e7/SVG1.1_Color_Swatch.svg).
+
+Note that the color names have to be all lowercase.
+
+## Colours by number
+
+You can also specify colour with up to three numbers, from 0 to 1:
+
+- 'hue' - position around the color wheel between 0 and 1
+- 'saturation' - from greyscale (0) to full colour (1) _(optional)_
+- 'brightness' - from light off (0) to full brightness (1) _(optional)_
+
+'Brightness' is sometimes referred to as 'value'. For more information you could have a [look at the wikipedia page](https://en.wikipedia.org/wiki/HSL_and_HSV) for hue, saturation and value.
+
+<MiniRepl
+  client:visible
+  tune={`
+hue("0 0.1(3,8)")
+  .saturation("1").brightness("1")
+  .light("1")
+  .blink(true)
+  .lights()
+`}
+/>
+
+We can then use e.g. the 'saw' signal to move around the colour wheel smoothly:
+
+<MiniRepl
+  client:visible
+  tune={`
+hue(saw).saturation("1").brightness("1")
+  .light("0")
+  .blink(false)
+  // saw is a continuous signal, we need this 'segment' to take values from it
+  .segment(32)
+  .lights()
+`}
+/>
+
+## Random colours
+
+Here 'hue' is set to a random colour. Change `rand` to `perlin` for a smoothly changing randomness.
+
+<MiniRepl
+  client:visible
+  tune={`
+light("0 .. 49".slow(4))
+  .hue(rand)
+  .saturation("1").brightness("1")
+  .blink(true)
+  .lights()
+`}
+/>
+
+## Fading lights
+
+Here's a trick to get lights to fade in and out.
+
+<MiniRepl
+  client:visible
+  tune={`
+light("0 1 [2 3] 4 5")
+  .hue("0 0.25 0.5 0.75")
+  .squeeze(brightness(fastcat(saw,isaw).segment(16)))
+  .saturation("1")
+  .blink(true)
+  .lights()
+`}
+/>
+
+## All the lights
+
+If you set light to `-1`, they will all come on at once.
+
+<MiniRepl
+  client:visible
+  tune={`
+light("-1 [1 2 3]")
+  .blink(1)
+  .color("purple blue")
+  .lights()
+`}
+/>
