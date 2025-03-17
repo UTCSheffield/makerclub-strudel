@@ -49,7 +49,7 @@ $: sound("jazz jazz cp jazz")`}
 
 Now try writing your own pattern with some of these other sounds:
 
-`insect wind jazz metal east crow casio space numbers`
+`insect wind jazz metal east crow casio space num`
 
 <MiniRepl client:visible tune={`//your code here`} dirt punchcard />
 
@@ -63,7 +63,7 @@ We can speed things up with `*`
 
 Or slow them down with `/` - the clap only sounds every other cycle:
 
-<MiniRepl client:visible tune={`sound("bd cp/2") `} dirt punchcard />
+<MiniRepl client:visible tune={`sound("bd cp/2") `} dirt />
 
 We can choose different sounds from a set using `:`. The computer starts counting at `0`, so `casio:0` is the same as `casio`.
 
@@ -115,7 +115,7 @@ We connect commands together with `.`
 
 We can chain commands together in any order, however, because Strudel always takes the rhythm from the first pattern, we need to be careful how we do this:
 
-<MiniRepl client:visible tune={`sound("casio").note("0 1 0 5")`} dirt punchcard />
+<MiniRepl client:visible tune={`sound("casio").note("0 1 0 5")`} dirt />
 
 There's another way of selecting samples, using a command called `n` - this gives us a bit more flexibility in writing patterns.
 
@@ -210,7 +210,7 @@ This can sound quite confusing as it's randomly jumping between the forwards and
 
 `Iter` starts the pattern at a different point each cycle, giving us a rotational pattern:
 
-<MiniRepl client:visible tune={`n("1 2 3 4").sound("numbers").iter(4).slow(2)`} dirt punchcard />
+<MiniRepl client:visible tune={`n("1 2 3 4").sound("num").iter(4).slow(2)`} dirt punchcard />
 
 This can lead to some nice variation across time:
 
