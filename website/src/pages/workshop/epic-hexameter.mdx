@@ -1,0 +1,71 @@
+---
+title: Getting Inspired by Epic Hexameter
+layout: ../../layouts/MainLayout.astro
+---
+
+import { MiniRepl } from '@src/docs/MiniRepl';
+import Box from '@components/Box.astro';
+import QA from '@components/QA';
+
+# Getting Inspired by Epic Hexameter
+
+Ancient Greek drama and poetry was originally sung and accompanied by dance and music. Unfortunately a lot of this rhythm is lost in translation and transmission of texts to the modern day, but we do know quite a lot about it.
+
+<div style={{ display: 'flex', gap: '10px' }}>
+  <img
+    src="https://media.britishmuseum.org/media/Repository/Documents/2014_10/3_19/deb2f0e2_d89f_4e11_af86_a3b90147073b/mid_00221978_001.jpg"
+    alt="A poet painted on a vase"
+    width="200"
+  />
+  <img
+    src="https://media.britishmuseum.org/media/Repository/Documents/2014_10/2_13/166bb996_1150_43e7_abf8_a3b800e45abb/mid_00138115_001.jpg"
+    alt="The other side of the vase with a flute player"
+    width="200"
+  />
+</div>
+
+Neck amphora by the Kleophrades painter circa 485BC
+
+© The Trustees of the British Museum
+via [The British Museum](https://www.britishmuseum.org/collection/object/G_1843-1103-34?selectedImageId=345935001)
+
+Here's a nice video of [@lotos.lab](https://www.instagram.com/lotos.lab) and [@stefconnerssong](https://www.instagram.com/stefconnersong/) on Instagram doing a Roman practice routine designed to get you limber for performance of Greek tragic plays - this is the _oktokaidekasemos_ (an eighteen-beat rhythm):
+
+<iframe
+  src="https://www.instagram.com/p/DFIdGDspGTS/embed"
+  width="400"
+  height="480"
+  frameborder="0"
+  scrolling="no"
+  allowtransparency="true"
+></iframe>
+
+# Greek metrical structures
+
+- A _line_ is like a _cycle_ - it is made of a set number of feet
+- A _foot_ is like a _step_ - it is made of several mora
+- A _mora_ is like a _sub-step_ - short syllables take up one mora, long syllables take up two
+
+## Some feet:
+
+```
+Short syllables: U
+Long syllables:  -
+3 morae:		4 morae:		5 morae:		6 morae:
+U-		        --		        -U-		        -UU-
+-U		        -UU		        U--		        UU--
+UUU		        UU-		        (but not other combinations…)
+```
+
+# Epic hexamater
+
+This is the metre found in Homeric Epic
+
+- In general epic hexamater has 6 feet of 4 morae each line
+- Feet are usually `-UU` (a dactyl) but can be `--` (a spondee)
+- We don’t usually get a spondee in the 6th foot
+- The 6th foot can also be shortened to `-U`, which is only 3 morae, giving our rhythm a bump
+- The third foot can have a caesura (pause) in between the second and 3rd or 3rd and 4th morae
+
+![The first line of the Iliad with metrical markings](https://www.researchgate.net/profile/Annie-Lamar/publication/338440310/figure/fig1/AS:1019770245763074@1620143581744/First-line-of-the-Iliad-with-metrical-markings.jpg)
+_The first line of the Iliad with metrical markings_ from: Lamar, Annie & Chambers, America. (2019). [Generating Homeric Poetry with Deep Neural Networks.](https://www.researchgate.net/publication/338440310_Generating_Homeric_Poetry_with_Deep_Neural_Networks) 68-75. 10.1109/TransAI46475.2019.00020.

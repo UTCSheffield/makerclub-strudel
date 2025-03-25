@@ -76,6 +76,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Carnatic Rhythms', link: 'workshop/carnatic' },
       { text: 'Motor Movement', link: 'workshop/motors' },
       { text: 'Lights', link: 'workshop/lights' },
+      { text: 'Epic Hexameter', link: 'workshop/epic-hexameter' },
     ],
     'Making Sound': [
       { text: 'Samples', link: 'learn/samples' },
