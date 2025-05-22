@@ -52,7 +52,7 @@ window.path = '/move/x';
 // This adds the 'move' and 'motor' commands to strudel
 const {move, motor} = createParams('move', 'motor'); window.move = move; window.motor = motor;
 // This adds the 'robot' command
-Pattern.prototype.robot = function()  {return this.mqtt('alpaca', undefined, path, 'wss://sponge.algorithmicpattern.org:443/mqtt')};
+Pattern.prototype.robot = function()  {return this.mqtt('alpaca', undefined, path, 'wss://things.patternclub.org:443/mqtt')};
 silence;
   `}
 />

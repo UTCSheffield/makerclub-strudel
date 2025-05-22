@@ -59,7 +59,7 @@ const name = "light:x"
 const {hue, saturation, brightness, light, topic, blink}
 = createParams('hue', 'saturation', 'brightness', 'light','topic','blink');
 window.light = light; window.hue = hue; window.saturation = saturation; window.brightness = brightness; window.topic = topic; window.blink = blink;
-Pattern.prototype.lights = function() {return this.topic(name).mqtt('alpaca', undefined, undefined, 'wss://sponge.algorithmicpattern.org:443/mqtt')};
+Pattern.prototype.lights = function() {return this.topic(name).mqtt('alpaca', undefined, undefined, 'wss://things.patternclub.org:443/mqtt')};
 
 silence
 `}
