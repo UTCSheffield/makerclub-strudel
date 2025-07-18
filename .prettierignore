@@ -15,3 +15,4 @@ website/.astro
 **/motors.mdx
 !tidal-drum-machines.json
 !tidal-drum-machines-alias.json
+.pnpm-store
