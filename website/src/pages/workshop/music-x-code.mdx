@@ -7,11 +7,13 @@ import { MiniRepl } from '@src/docs/MiniRepl';
 import Box from '@components/Box.astro';
 import QA from '@components/QA';
 
-# Live coding with Strudel
+# Live-coding with Strudel
 
-This is a beginners' Strudel worksheet designed to be used alongside the Site Gallery video, which will have more detailed explanations.
+This is a beginners' Strudel worksheet designed for Peckham Digital's 2025 Music x Code programme. Thanks to Lucy Cheesman for providing the foundations of this workshop!
 
-Feel free to also explore the other learning resources on this site!
+The purpose of this guide is to start you on your live-coding journey with Strudel. There are many different ways to do live-coding, and the approach outlined here is by no means the best or only approach. However, we hope that it will provide you with the tools necessary to start live-coding music for yourself.
+
+Most of all, we encourage you to experiment - there is no right or wrong way to live-code!
 
 # Getting started
 
@@ -20,12 +22,6 @@ We can write and run code interactively in this worksheet - press the play butto
 Later you can move on to using the main Strudel editor (click `go to REPL` in the top right), but it works in the same way as the code snippets on this page.
 
 Feel free to edit any of the code you see - you can always refresh the page to get the original worksheet back.
-
-Performance is highly personal, I want to share my approach to try to demystify the process, but there are many ways to use Strudel!
-
-# Links
-
-- [Workshop slides](https://docs.google.com/presentation/d/1LX9bKf7IWJJF1sd8U1bjzbW7lAKGNXlSqZePhhk1NVA/edit?usp=sharing)
 
 # The basics
 
@@ -90,12 +86,16 @@ We can choose different sounds from a set using `:`. The computer starts countin
 
 <MiniRepl client:visible tune={`sound("casio casio:1 casio casio:5")`} dirt />
 
-We can add a rest using `~`
+An alternative way to do this is with `n`:
 
-<MiniRepl client:visible tune={`sound("casio casio:1 ~ casio:5")`} dirt />
+<MiniRepl client:visible tune={`n("0 1 0 5").sound("casio")`} dirt />
+
+We can add a rest using `~` or `-`:
+
+<MiniRepl client:visible tune={`n("0 1 ~ 5").sound("casio")`} dirt />
 
 We can create more variation with sub-sequences.
-We do this by breaking our steps down into mini patterns using `[]`
+We do this by breaking our steps down into mini patterns using `[]`:
 
 <MiniRepl client:visible tune={`sound("bd sd bd hh")`} dirt />
 
@@ -105,20 +105,24 @@ Let's have a look at how that looks visually:
 
 <MiniRepl client:visible tune={`sound("bd sd [bd cp] [hh oh]")`} dirt punchcard />
 
-You can nest sequences within sequences for dense patterns
+You can also use `*` or `/` to speed up or slow down sub-sequences:
 
-<MiniRepl client:visible tune={`sound("[[bd [bd bd bd bd]] bd sd] [bd cp]")`} dirt punchcard />
+<MiniRepl client:visible tune={`sound("bd sd [bd cp]/2 [hh oh]*2")`} dirt punchcard />
 
-We can also schedule events across multiple cycles using `<>`
+You can nest sequences within sequences for dense patterns:
 
-<MiniRepl client:visible tune={`sound("casio <[hh cp] casio:1> ~ casio:5")`} dirt />
+<MiniRepl client:visible tune={`sound("bd bd [hh hh] [hh [hh hh]]")`} dirt punchcard />
+
+You can also use `<>` to play events once per cycle:
+
+<MiniRepl client:visible tune={`sound("bd bd <hh cp> sd")`} dirt />
 
 Let's add some easy randomness using `?`.
 Putting `?` after a sound means there is a 50% probability that the sound will play.
 
 <MiniRepl client:visible tune={`sound("hh*8?")`} dirt />
 
-# Creative limitations - selecting functions
+# Selecting functions
 
 Strudel has a _lot_ of functions (To check them out click `go to REPL > Reference`) - this can be a problem for live performances:
 
@@ -136,7 +140,7 @@ Let's start by writing some simple patterns and slowly adding complexity.
 
 <MiniRepl client:visible tune={`$: sound("{bd bd/1 bd/2 bd/3, ~ ~ hh [~ cp] hh*3}")`} dirt />
 
-[Euclidian rhythms](https://en.wikipedia.org/wiki/Euclidean_rhythm)
+[Euclidean rhythms](https://en.wikipedia.org/wiki/Euclidean_rhythm)
 
 <MiniRepl client:visible tune={`$: sound("{bd bd/1 bd/2 bd/3, ~ ~ hh [~ cp] hh*3}")
 
@@ -192,7 +196,7 @@ $: sound("metal(3,8)")
 .hurry("<1 1 2 4>")
 .jux(iter("4"))`} dirt />
 
-`sometimes`/`often`/`every`/etc let us apply transformations over time
+`sometimes`/`often`/`every`/etc lets us apply transformations only some of the time
 
 <MiniRepl client:visible tune={`$: sound("{bd bd/1 bd/2 bd/3, ~ ~ hh [~ cp] hh*3}")
 .fast("1 <1 2>")
@@ -216,22 +220,13 @@ $: sound("wind\*8?")
 .legato("1")
 .chunk(4, hurry("<2 0.5>"))`} dirt />
 
-The last function I want to look at here is `off`, which applies a transformation on version of the pattern which is shifted by the specified amount
+The last function I want to look at here is `off`, which can be used to add another layer of complexity to your pattern.
 
-The code for this is a little tricky... if you're not feeling confident then please don't worry too much!
+Here, the pattern is delayed by 1/8th of a cycle, made faster with `speed(2)`, then played back on top of the original pattern:
 
-<MiniRepl client:visible tune={`$: sound("{bd bd/1 bd/2 bd/3, ~ ~ hh [~ cp] hh*3}")
+<MiniRepl client:visible tune={`$: sound("{bd cp [hh oh] bd")
 .fast("1 <1 2>")
-.off(0.125, x=>x.speed(2))
-
-$: sound("metal(3,8)")
-.hurry("<0.5 1 1 2>")
-.jux(iter("4"))
-.every(2, fast(2))
-
-$: sound("wind\*8?")
-.legato("1")
-.chunk(4, hurry("<2 0.5>"))`} dirt />
+.off(1/8, x=>x.speed(2))`} dirt />
 
 ### Exercise
 
@@ -259,9 +254,11 @@ Strudel doesn't come with many long samples so we're going to load some in from 
 $: sound("rhodes")
 .loopAt(2)`} dirt />
 
-As well as a basic loop we can play about with the parameters of `loopAt`
+As well as a basic loop we can play about with the parameters of `loopAt`:
 
-<MiniRepl client:visible tune={`$: sound("rhodes*4")
+<MiniRepl client:visible tune={`samples({ rhodes: 'https://cdn.freesound.org/previews/132/132051_316502-lq.mp3' })
+  
+$: sound("rhodes*4")
 .loopAt("<4 <1 2>>")
 .cut(1)
 .iter(4)
@@ -269,6 +266,8 @@ As well as a basic loop we can play about with the parameters of `loopAt`
 
 $: sound("{bd bd/1 bd/2 bd/3, ~ ~ hh [~ cp] hh}")
 .every(4, (slow(2)))`} dirt />
+
+Here, `cut` is used to stop playing a sample as soon as another sample is triggered.
 
 A different approach uses `slice` to chop our sample into bits and then pattern those bits. Again very useful when working with loops.
 
@@ -278,7 +277,7 @@ Let's load in some more samples - this time we are fetching the sample bank that
 samples('github:tidalcycles/dirt-samples')
 
 $: sound("breaks165")
-.slice(8, "7 6 [2 4] 3")
+.slice(8, "0 1 2 3 4 5 6 7")
 .chunk(4, hurry(2))
 
 $: sound("{bd bd/1 bd/2 bd/3, ~ ~ hh [~ cp] hh}")
@@ -299,7 +298,60 @@ Tips:
 - Even if you like where it's going try to get used to deleting and re-creating your patterns
 - Now we've loaded in the TidalCycles samples here are a few more longer sounds you might want to play about with: `pebbles break foo birds`
 
-<MiniRepl client:visible tune={`//your code here`} dirt />
+<MiniRepl client:visible tune={`
+samples('github:tidalcycles/dirt-samples')
+
+//your code here`} dirt />
+
+# Effects
+
+You can use effects to change the character of your sounds. For example, `hpf` applies a high-pass filter, which cuts out the lower frequencies of a sound:
+
+<MiniRepl client:visible tune={`
+sound("bd bd [hh oh] sd")
+.hpf("100 1000 5000 7500")`} dirt />
+
+Similarly, `lpf` cuts out the higher frequencies:
+
+<MiniRepl client:visible tune={`
+sound("bd bd [hh oh] sd")
+.lpf("20 100 1000 5000")`} dirt />
+
+Note that `lpf` and `hpf` work best with values in the range 20 - 20000, which is the range of frequencies typically audible to the human ear.
+
+You can use `pan` to move the sound between the left and right channels, where 0 is the left channel and 1 is the right channel:
+
+<MiniRepl client:visible tune={`
+sound("bd bd [hh oh] sd")
+.pan("0 0.25 0.75 1")`} dirt />
+
+You can create an echo effect using `delay`, along with a value from 0 to 1 to control the level of the delay signal:
+
+<MiniRepl client:visible tune={`
+s("cp cp").delay("<0 .25 .5 1>")`} dirt />
+
+You can use `delaytime` to change the speed of the delay:
+
+<MiniRepl client:visible tune={`
+s("cp cp").delay(.25).delaytime("<.125 .25 .5 1>")`} dirt />
+
+You can apply a reverb effect with `room`:
+
+<MiniRepl client:visible tune={`
+s("cp cp").room("<.125 .25 .5 1>")`} dirt />
+
+# Signals
+
+Until now, we've been using numbers to control our patterns. However, you can also use signals which change smoothly over time.
+
+For example, you can use `saw` to create a signal that rises smoothly from a lower value to a higher value:
+
+<MiniRepl client:visible tune={`
+s("cp cp").delay(.25).lpf(saw.range(500, 5000).slow(4))`} dirt />
+
+Here, `.slow(4)` means that it takes four cycles for the signal to reach it's maximum value.
+
+You can also use signals with different shapes - try using `tri` or `square` instead of `saw` and see how that changes the sound!
 
 # Sound palettes
 
@@ -329,12 +381,6 @@ Tips:
 - If you're a beginner there will probably be plenty in here to keep you occupied. If you're more experienced you might want to bring in some of your own sounds - you can search on freesound or upload samples from your computer. If you need some instructions on how to do this then click [Learn > Making Sound > Samples > Loading Custom Samples](learn/samples/#loading-custom-samples)
 - When you find a sound you're interesting in then try playing about with it using some of your chosen functions, think about what sounds good to you and how different types of sound work in different contexts
 - Try to find 5-10 sounds that you like and feel you can work with
-
-Bonus - add some effects!
-
-- I actually don't tend to use too many audio effects, but there are _loads_ available.
-- Some of my favourites are `vowel`, `shape`, `speed`, `hpf`, `lpf`
-- Try applying these to the sounds/patterns you're working on and see what sounds good.
 
 # Bringing it all together
 
