@@ -4,6 +4,7 @@ layout: ../../layouts/MainLayout.astro
 ---
 
 import { MiniRepl } from '@src/docs/MiniRepl';
+import { midi2note } from '@strudel/core';
 import Box from '@components/Box.astro';
 import QA from '@components/QA';
 
@@ -59,8 +60,7 @@ Even more?
 
 The pattern becomes much faster and denser - this is because Strudel has a consistent 'cycle' of time running in the background. You might find that adding `._spiral()` to the end of your code helps you to visualise this:
 
-<MiniRepl client:visible tune={`
-sound("bd hh sd oh")
+<MiniRepl client:visible tune={`sound("bd hh sd oh")
 ._spiral()
 `} dirt />
 
@@ -81,7 +81,7 @@ Now try writing your own pattern with some of these other sounds:
 
 `insect wind jazz metal east crow casio space numbers`
 
-<MiniRepl client:visible tune={``} dirt />
+<MiniRepl client:visible tune={`//your code here`} dirt />
 
 ## Mininotation
 
@@ -250,8 +250,41 @@ Here, the pattern is delayed by 1/8th of a cycle, made faster with `speed(2)`, t
 .off(1/8, x=>x.speed(2))`} dirt />
 
 <Box>
-Note: The second argument to `off`, `x=>x.speed(2)`, is known as a lamdba function. Essentially, it's telling `off` to apply `.speed(2)` to the original pattern.
+Note: The second argument to `off`, `x=>x.speed(2)`, is known as a lambda function. Essentially, it's telling `off` to apply `.speed(2)` to the original pattern.
 </Box>
+
+## Sound banks
+
+By default, Strudel includes samples from a range of classic drum machines, such as the [Roland TR-808](https://en.wikipedia.org/wiki/Roland_TR-808).
+
+If you go to the REPL, then go to `sounds` > `drum-machines`, you can see that these samples are all prefixed with drum machine names: `RolandTR808_bd`, `RolandTR808_sd`, `RolandTR808_hh` etc. The number in brackets next to each sample indicates the number of samples within each set - for example, `RolandTR808_bd(25)` contains 25 samples.
+
+You could bring these in like this:
+
+<MiniRepl client:visible
+tune={`sound("RolandTR808_bd RolandTR808_hh RolandTR808_sd RolandTR808_hh")`} dirt />
+
+But a quicker way is to use `.bank(name)`, which simply adds `name_` to the beginning of each sample:
+
+<MiniRepl client:visible
+tune={`sound("bd hh sd hh").bank("RolandTR808")`} dirt />
+
+<Box>
+Here are a few others to try:
+
+- RolandTR909
+- compurhythm8000
+- akailinn
+- emusp12
+</Box>
+
+You can use `n` to select different sounds from each sample set:
+
+<MiniRepl client:visible
+tune={`n("<1 2> 1 <2 3> 1")
+.sound("bd hh sd hh")
+.bank("RolandTR808")`} dirt />
+
 
 ### Exercise
 
@@ -352,7 +385,7 @@ Tips:
 - If you're feeling confident try to do it without looking at the reference
 - Remember - if you don't like where it's going, delete it and start again!
 - Even if you like where it's going try to get used to deleting and re-creating your patterns
-- Now we've loaded in the TidalCycles samples here are a few more longer sounds you might want to play about with: `pebbles break foo birds`
+- Now we've loaded in the TidalCycles samples here are a few more longer sounds you might want to play about with: `pebbles foo birds`
 
 <MiniRepl client:visible tune={`
 samples('github:tidalcycles/dirt-samples')
@@ -393,8 +426,7 @@ s("cp cp").delay(.25).delaytime("<.125 .25 .5 1>")`} dirt />
 
 You can apply a reverb effect with `room`:
 
-<MiniRepl client:visible tune={`
-s("cp cp").room("<.125 .25 .5 1>")`} dirt />
+<MiniRepl client:visible tune={`s("cp cp").room("<.125 .25 .5 1>")`} dirt />
 
 # Signals
 
@@ -402,9 +434,217 @@ Until now, we've been using numbers to control our patterns. However, you can al
 
 For example, you can use `saw` to create a signal that rises smoothly from a lower value to a higher value:
 
-<MiniRepl client:visible tune={`
-s("cp cp").delay(.25).lpf(saw.range(500, 5000).slow(4))`} dirt />
+<MiniRepl client:visible tune={`s("cp cp").delay(.25).lpf(saw.range(500, 5000).slow(4))`} dirt />
 
 Here, `.slow(4)` means that it takes four cycles for the signal to reach it's maximum value.
 
 You can also use signals with different shapes - try using `tri` or `square` instead of `saw` and see how that changes the sound!
+
+# Notes
+
+So far, we've used Strudel to create rhythmic patterns, like beats. This is fine by itself, but you might be interested in melodic patterns, or want to combine rhythm and melody to add some variety to your music.
+
+The basic building block of a melody is a _note_. In Western musical notation, a note describes both the _pitch_ of a sound - how high or low it is - and the duration - how long it is played for.
+
+There are a few different ways to describe notes in Strudel. One way is to use numbers:
+
+<MiniRepl
+  client:visible
+  tune={`note("48 52 55 59").sound("piano")`}
+  claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
+
+You can also use decimal numbers here, like 55.5, for small variations in pitch.
+
+Another way is to use the letters A - G, which is more common to Western musical notation:
+
+<MiniRepl
+  client:visible
+  tune={`note("c e g b").sound("piano")`}
+  claviature
+  claviatureLabels={Object.fromEntries(['c3', 'd3', 'e3', 'f3', 'g3', 'a3', 'b3'].map((n) => [n, n.split('')[0]]))}
+/>
+
+To play a black key _before_ a white key, we add the 'flat' symbol (`b`) to the letter:
+
+<MiniRepl
+  client:visible
+  tune={`note("db eb gb ab bb").sound("piano")`}
+  claviature
+  claviatureLabels={Object.fromEntries(
+    ['db3', 'eb3', 'gb3', 'ab3', 'bb3'].map((n) => [n, n.split('').slice(0, 2).join('')]),
+  )}
+/>
+
+To play the black key _after_ the white key, we add a 'sharp' symbol (`#`) to the letter:
+
+<MiniRepl
+  client:visible
+  tune={`note("c# d# f# g# a#").sound("piano")`}
+  claviature
+  claviatureLabels={Object.fromEntries(
+    ['c#3', 'd#3', 'f#3', 'g#3', 'a#3'].map((n) => [n, n.split('').slice(0, 2).join('')]),
+  )}
+/>
+
+You can control which octave the note is played in by adding the numbers 1 - 8 to the letter, with 1 being the lowest and 8 being the highest:
+
+<MiniRepl
+  client:visible
+  tune={`note("c2 e3 g4 b5").sound("piano")`}
+  claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), midi2note(i + 36)]),
+  )}
+/>
+
+To control the length of the note, use `clip(n)`, which multiplies the duration by `n`:
+
+<MiniRepl
+  client:visible
+  tune={`note("c2 e3 g4 b5")
+  .clip(.5)
+  .sound("piano")`}
+  claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), midi2note(i + 36)]),
+  )}
+/>
+
+## Exercise
+
+Try to create a melody you're happy with using `note`, `sound`, `clip`, and some of the functions you've learned above (such as `fast`, `iter`, or `off`).
+
+If you'd like to try something other than the `piano` sound, you can find more sounds in the REPL under `sounds` > `synths`. Some of the sounds might take time to load!
+
+<MiniRepl client:visible tune={`//your code here`} dirt />
+
+# Chords
+
+A _chord_ is a set of notes played together. We can achieve that by separating each note with a comma (`,`):
+
+<MiniRepl client:visible
+  tune={`note("53,57,60").sound("piano")`}
+  claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
+
+You could also use note letters instead of numbers here, i.e. `f3,a3,c4`.
+
+We can use `<>` to alternate between chords:
+
+<MiniRepl client:visible
+tune={`note("<[53,57,60] [48,51,55]>").sound("piano")`}
+claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
+
+A more convenient way to think about chords is in terms of the distance (or interval) of each note from the _root_ note, which is typically the lowest note of the chord.
+
+For instance, if we take `53,57,60`, the lowest note is `53`, or `f3`. The distance from 53 to 57 is 4, and the distance from 53 to 60 is 7. So, we could also specify this chord as:
+
+<MiniRepl client:visible
+tune={`note("0,4,7".add("53")).sound("piano")`}
+claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
+
+This is known as a _major_ chord, which is usually described as sounding 'happy'. `0,3,7` is a _minor_ chord, which is usually described as sounding 'sad':
+
+<MiniRepl client:visible
+tune={`note("0,3,7".add("53")).sound("piano")`}
+claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
+
+So, we could also write our alternating chord sequence as:
+
+<MiniRepl client:visible
+tune={`note("<[0,4,7] [0,3,7]>".add("<53 48>")).sound("piano")`}
+claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
+
+## Exercise
+
+Try to make a chord sequence you're happy with using the code below as a starting point:
+
+<MiniRepl client:visible tune={`note("<[0,4,7] [0,3,7]>".add("<c a f e>")).sound("piano")`} dirt />
+
+You can find more ways to work with chords in [this tutorial](https://strudel.patternclub.org/understand/voicings/).
+
+# Scales
+
+Another way to sequence notes is from a _scale_. A scale is a series of notes, ordered by pitch, with specific intervals between the notes.
+
+For example, a C major scale:
+
+<MiniRepl client:visible
+tune={`n("0 1 2 3 4 5 6 7")
+.scale("C:major")
+.clip(1)
+.sound("piano")`}
+claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
+
+<Box>
+Instead of C:major, try:
+
+- C:major
+- A2:minor
+- D:dorian
+- G:mixolydian
+- A2:minor:pentatonic
+- F:major:pentatonic
+
+If you have no idea what these scales mean, don’t worry. These are just labels for different sets of notes that go well together.
+</Box>
+
+You can use mininotation with `n` to vary which notes of the scale are chosen:
+
+<MiniRepl client:visible
+tune={`n("0 <5 4> <3 2> 7, <[0,3,7] [0,4,7]>")
+.scale("A:minor")
+.clip(1)
+.sound("piano")`}
+claviature
+  claviatureLabels={Object.fromEntries(
+    Array(49)
+      .fill()
+      .map((_, i) => [midi2note(i + 36), i + 36]),
+  )}
+/>
