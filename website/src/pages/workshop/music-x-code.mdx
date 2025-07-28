@@ -394,16 +394,26 @@ samples('github:tidalcycles/dirt-samples')
 
 # Effects
 
-You can use effects to change the character of your sounds. For example, `hpf` applies a high-pass filter, which cuts out the lower frequencies of a sound:
+You can use effects to change the character of your sounds. The simplest of these is `gain`, which controls the amount a signal is amplified:
 
-<MiniRepl client:visible tune={`
-sound("bd bd [hh oh] sd")
+<MiniRepl client:visible
+tune={`s("hh*8").gain(".4!2 1 .4!2 1 .4 1").fast(2)`} dirt />
+
+`speed` changes the speed a sample is played back. Providing a negative value will play the sample backwards:
+
+<MiniRepl client:visible
+tune={`s("bd sd [hh oh] sd").speed("1 2 -1 -2")`} dirt />
+
+`hpf` applies a high-pass filter, which cuts out the lower frequencies of a sound:
+
+<MiniRepl client:visible
+tune={`sound("bd bd [hh oh] sd")
 .hpf("100 1000 5000 7500")`} dirt />
 
 Similarly, `lpf` cuts out the higher frequencies:
 
-<MiniRepl client:visible tune={`
-sound("bd bd [hh oh] sd")
+<MiniRepl client:visible
+tune={`sound("bd bd [hh oh] sd")
 .lpf("20 100 1000 5000")`} dirt />
 
 Note that `lpf` and `hpf` work best with values in the range 20 - 20000, which is the range of frequencies typically audible to the human ear.
@@ -432,13 +442,23 @@ You can apply a reverb effect with `room`:
 
 Until now, we've been using numbers to control our patterns. However, you can also use signals which change smoothly over time.
 
-For example, you can use `saw` to create a signal that rises smoothly from a lower value to a higher value:
+For example, you can use `saw` to create a signal that rises smoothly from a lower value (500) to a higher value (5000):
 
-<MiniRepl client:visible tune={`s("cp cp").delay(.25).lpf(saw.range(500, 5000).slow(4))`} dirt />
+<MiniRepl client:visible tune={`s("cp*2").delay(.25).lpf(saw.range(500, 5000).slow(4))`} dirt />
 
 Here, `.slow(4)` means that it takes four cycles for the signal to reach it's maximum value.
 
+<Box>
 You can also use signals with different shapes - try using `tri` or `square` instead of `saw` and see how that changes the sound!
+</Box>
+
+## Exercise
+
+Take your pattern from the previous exercise and try applying some effects. If you're feeling confident, try using signals to change the effects!
+
+Tips:
+
+<MiniRepl client:visible tune={`// your code here`} dirt />
 
 # Notes
 
@@ -519,6 +539,14 @@ To control the length of the note, use `clip(n)`, which multiplies the duration 
       .map((_, i) => [midi2note(i + 36), midi2note(i + 36)]),
   )}
 />
+
+Earlier, we used a signal to control the parameters of an effect. You can also use signals in place of ordinary patterns - for example:
+
+<MiniRepl client:visible
+tune={`note(saw.range(40,52).segment(16)).sound("tri")`}
+/>
+
+The difference here is that we've used `segment` to sample the signal at 16 points over the course of one cycle. This is used to turn a continuous signal, which changes smoothly, into a discrete signal, which changes in 'steps'.
 
 ## Exercise
 
@@ -640,7 +668,7 @@ You can use mininotation with `n` to vary which notes of the scale are chosen:
 tune={`n("0 <5 4> <3 2> 7, <[0,3,7] [0,4,7]>")
 .scale("A:minor")
 .clip(1)
-.sound("piano")`}
+.sound("harp")`}
 claviature
   claviatureLabels={Object.fromEntries(
     Array(49)
@@ -648,3 +676,19 @@ claviature
       .map((_, i) => [midi2note(i + 36), i + 36]),
   )}
 />
+
+## Exercise
+
+Try applying what you've learned so far to create a musical piece. For a quick overview of the functions referenced here, check out the [Recap](https://strudel.patternclub.org/workshop/recap) page! 
+
+You might find the comments below helpful to organise your code:
+
+<MiniRepl client:visible
+tune={`// Drums
+// $:
+
+// Longer samples
+// $:
+
+// Notes
+// $:`} />
