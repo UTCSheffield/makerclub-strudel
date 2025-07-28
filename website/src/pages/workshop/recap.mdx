@@ -66,3 +66,14 @@ This page is just a listing of all functions covered in the workshop!
 | add    | add numbers / notes                 | <MiniRepl client:visible tune={`n("0 2 4 6".add("<0 1 2 1>")).scale("C:minor")`} /> |
 | ply    | speed up each event n times         | <MiniRepl client:visible tune={`s("bd sd").ply("<1 2 3>")`} />                      |
 | off    | copy, shift time & modify           | <MiniRepl client:visible tune={`s("bd sd, hh*4").off(1/8, x=>x.speed(2))`} />       |
+
+## Longer Samples
+
+| name   | description                         | example                                                                             |
+| ------ | ----------------------------------- | ----------------------------------------------------------------------------------- |
+| loopAt | sync sample to a number of cycles   | <MiniRepl client:visible tune={`s("gong").loopAt(2)`} />                            |
+| fit    | fit sample to event duration        | <MiniRepl client:visible tune={`s("gong/2").fit()`} />                              |
+| chop   | chop sample into equal pieces       | <MiniRepl client:visible tune={`s("gong/2").fit().chop(8)`} />                      |
+| slice  | re-order slices                     | <MiniRepl client:visible tune={`s("gong/2").fit().slice(4, "3 0 ~ 2")`} />          |
+| splice | slice and change speed              | <MiniRepl client:visible tune={`s("gong/2").splice(4, "3 0 ~ 2")`} />               |
+| striate| interlace samples                   | <MiniRepl client:visible tune={`s("gong:1 gong:2").striate(6).cut(1)`} />           |
