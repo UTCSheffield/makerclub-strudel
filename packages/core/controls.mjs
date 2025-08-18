@@ -252,6 +252,20 @@ export const { fmenv } = registerControl('fmenv');
  *
  */
 export const { fmattack } = registerControl('fmattack');
+
+/**
+ * waveform of the fm modulator
+ *
+ * @name fmwave
+ * @param {number | Pattern} wave waveform
+ * @example
+ * n("0 1 2 3".fast(4)).scale("d:minor").s("sine").fmwave("<sine square sawtooth crackle>").fm(4).fmh(2.01)
+ * @example
+ * n("0 1 2 3".fast(4)).chord("<Dm Am F G>").voicing().s("sawtooth").fmwave("brown").fm(.6)
+ *
+ */
+export const { fmwave } = registerControl('fmwave');
+
 /**
  * Decay time for the FM envelope: seconds until the sustain level is reached after the attack phase.
  *
@@ -306,6 +320,7 @@ export const { fft } = registerControl('fft');
  *
  * @name decay
  * @param {number | Pattern} time decay time in seconds
+ * @synonyms dec
  * @example
  * note("c3 e3 f3 g3").decay("<.1 .2 .3 .4>").sustain(0)
  *
@@ -445,6 +460,78 @@ export const { crush } = registerControl('crush');
 export const { coarse } = registerControl('coarse');
 
 /**
+ * modulate the amplitude of a sound with a continuous waveform
+ *
+ * @name tremolo
+ * @synonyms trem
+ * @param {number | Pattern} speed modulation speed in HZ
+ * @example
+ * note("d d d# d".fast(4)).s("supersaw").tremolo("<3 2 100> ").tremoloskew("<.5>")
+ *
+ */
+export const { tremolo } = registerControl(['tremolo', 'tremolodepth', 'tremoloskew', 'tremolophase'], 'trem');
+
+/**
+ * modulate the amplitude of a sound with a continuous waveform
+ *
+ * @name tremolosync
+ * @synonyms tremsync
+ * @param {number | Pattern} cycles modulation speed in cycles
+ * @example
+ * note("d d d# d".fast(4)).s("supersaw").tremolosync("4").tremoloskew("<1 .5 0>")
+ *
+ */
+export const { tremolosync } = registerControl(
+  ['tremolosync', 'tremolodepth', 'tremoloskew', 'tremolophase'],
+  'tremsync',
+);
+
+/**
+ * depth of amplitude modulation
+ *
+ * @name tremolodepth
+ * @synonyms tremdepth
+ * @param {number | Pattern} depth
+ * @example
+ * note("a1 a1 a#1 a1".fast(4)).s("pulse").tremsync(4).tremolodepth("<1 2 .7>")
+ *
+ */
+export const { tremolodepth } = registerControl('tremolodepth', 'tremdepth');
+/**
+ * alter the shape of the modulation waveform
+ *
+ * @name tremoloskew
+ * @synonyms tremskew
+ * @param {number | Pattern} amount between 0 & 1, the shape of the waveform
+ * @example
+ * note("{f a c e}%16").s("sawtooth").tremsync(4).tremoloskew("<.5 0 1>")
+ *
+ */
+export const { tremoloskew } = registerControl('tremoloskew', 'tremskew');
+
+/**
+ * alter the phase of the modulation waveform
+ *
+ * @name tremolophase
+ * @synonyms tremphase
+ * @param {number | Pattern} offset the offset in cycles of the modulation
+ * @example
+ * note("{f a c e}%16").s("sawtooth").tremsync(4).tremolophase("<0 .25 .66>")
+ *
+ */
+export const { tremolophase } = registerControl('tremolophase', 'tremphase');
+
+/**
+ * shape of amplitude modulation
+ *
+ * @name tremoloshape
+ * @param {number | Pattern} shape tri | square | sine | saw | ramp
+ * @example
+ * note("{f g c d}%16").tremsync(4).tremoloshape("<sine tri square>").s("sawtooth")
+ *
+ */
+export const { tremoloshape } = registerControl('tremoloshape', 'tremshape');
+/**
  * filter overdrive for supported filter types
  *
  * @name drive
@@ -453,6 +540,42 @@ export const { coarse } = registerControl('coarse');
  * note("{f g g c d a a#}%16".sub(17)).s("supersaw").lpenv(8).lpf(150).lpq(.8).ftype('ladder').drive("<.5 4>")
  *
  */
+
+/**
+ * modulate the amplitude of an orbit to create a "sidechain" like effect
+ *
+ * @name duckorbit
+ * @param {number | Pattern} orbit target orbit
+ * @example
+ * $: n(run(16)).scale("c:minor:pentatonic").s("sawtooth").delay(.7).orbit(2)
+ * $: s("bd:4!4").beat("0,4,8,11,14",16).duckorbit(2).duckattack(0.2).duckdepth(1)
+ *
+ */
+export const { duck } = registerControl('duckorbit', 'duck');
+
+/**
+ *  the amount of ducking applied to target orbit
+ *
+ * @name duckdepth
+ * @param {number | Pattern} depth depth of modulation from 0 to 1
+ * @example
+ * stack( n(run(8)).scale("c:minor").s("sawtooth").delay(.7).orbit(2), s("bd:4!4").beat("0,4,8,11,14",16).duckorbit(2).duckattack(0.2).duckdepth("<1 .9 .6 0>"))
+ *
+ */
+
+export const { duckdepth } = registerControl('duckdepth');
+
+/**
+ *  the attack time of the duck effect
+ *
+ * @name duckattack
+ * @param {number | Pattern} time
+ * @example
+ * stack( n(run(8)).scale("c:minor").s("sawtooth").delay(.7).orbit(2), s("bd:4!4").beat("0,4,8,11,14",16).duckorbit(2).duckattack("<0.2 0 0.4>").duckdepth(1))
+ *
+ */
+export const { duckattack } = registerControl('duckattack', 'duckatt');
+
 export const { drive } = registerControl('drive');
 
 /**
@@ -1561,18 +1684,6 @@ export const { density } = registerControl('density');
 // ['modwheel'],
 export const { expression } = registerControl('expression');
 export const { sustainpedal } = registerControl('sustainpedal');
-/* // TODO: doesn't seem to do anything
- *
- * Tremolo Audio DSP effect
- *
- * @name tremolodepth
- * @param {number | Pattern} depth between 0 and 1
- * @example
- * n("0,4,7").tremolodepth("<0 .3 .6 .9>").osc()
- *
- */
-export const { tremolodepth, tremdp } = registerControl('tremolodepth', 'tremdp');
-export const { tremolorate, tremr } = registerControl('tremolorate', 'tremr');
 
 export const { fshift } = registerControl('fshift');
 export const { fshiftnote } = registerControl('fshiftnote');
@@ -1649,7 +1760,6 @@ export const { zmod } = registerControl('zmod');
 // like crush but scaled differently
 export const { zcrush } = registerControl('zcrush');
 export const { zdelay } = registerControl('zdelay');
-export const { tremolo } = registerControl('tremolo');
 export const { zzfx } = registerControl('zzfx');
 
 /**
