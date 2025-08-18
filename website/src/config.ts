@@ -78,6 +78,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Lights', link: 'workshop/lights' },
       { text: 'Epic Hexameter', link: 'workshop/epic-hexameter' },
       { text: 'Music x Code', link: 'workshop/music-x-code' },
+      { text: 'More Music x Code', link: 'workshop/music-x-code-2' },
     ],
     'Making Sound': [
       { text: 'Samples', link: 'learn/samples' },
