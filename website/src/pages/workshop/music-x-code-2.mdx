@@ -1,0 +1,196 @@
+---
+title: More Music x Code Workshop
+layout: ../../layouts/MainLayout.astro
+---
+
+import { MiniRepl } from '@src/docs/MiniRepl';
+import { midi2note } from '@strudel/core';
+import Box from '@components/Box.astro';
+import QA from '@components/QA';
+
+# More live-coding with Strudel
+
+- Let's talk about functions!
+- Basic arithmetic
+- Aligning patterns
+- Carnatic rhythms
+  - shrink/expand
+  - grow
+- Into the grid
+  - tuples
+  - syncopation
+- Beyond the grid
+  - press / pressBy
+  - off-grid / swing
+- Anything else?
+
+## Let's talk about functions!
+
+<Box>
+Functions are a bit of a heavy topic to start the day with, sorry.
+
+It's a fundamental topic though - not covered too well in docs. Hopefully this will help clear things up. See how you go!
+
+</Box>
+
+**In strudel, almost everything is either a pattern, or a function.**
+
+What's the difference between a pattern and a function?
+
+- A pattern is a kind of behaviour - values that change over time.
+- A function is something that takes patterns (as 'input'), and creates a new pattern (as 'output')
+
+So, you can think of a function as an _incomplete_ pattern - you need to give it one or more patterns before it becomes a new pattern
+
+These are functions:
+
+```
+sound fast rev iter jux
+```
+
+This is a pattern that demonstrates all the above functions being used together:
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd hh sd hh").iter(4)
+    .fast("<2 3>").jux(rev)`}
+/>
+
+In the above, `sound` is a function, and it becomes a pattern when we give it
+`"bd hh sd hh"`. We then turn it into a different pattern by feeding it into the
+`iter(4)` function. Then it gets turned into a different pattern again when we
+feed it into the `fast("<2 3>")` function, and finds its final form that we
+hear, after being fed it into the `jux(rev)` function.
+
+<Box>
+Different functions require different numbers of inputs.
+
+For example, the `fast` function needs two patterns as inputs - the pattern that is 'fed into' it, and another pattern that says how much to speed it up by.
+
+The `sound` function just needs one input - a pattern of words (e.g. "bd hh sd hh"), to be used as a pattern of sounds.
+
+</Box>
+
+Functions like `jux` are extra weird because they take another function as an input!
+
+For example:
+
+- `.jux(rev)`
+- `.jux(iter(4))`
+- `.jux(press)`
+- `.jux(hurry(2))`
+
+So in this example
+
+<MiniRepl client:visible tune={`sound("bd hh sd hh").fast(2)`} />
+
+We can take that `fast(2)` function, and give it to a `jux` function:
+
+<MiniRepl client:visible tune={`sound("bd hh sd hh").jux(fast(2))`} />
+
+Now the `sound("bd hh sd hh")` pattern is being fed into `jux`, which in turn
+feeds it into `fast(2)` (but only on one speaker or earphone - that's what 'jux'
+does).
+
+<Box>
+It _might_ be useful to know that there are two ways of giving inputs to functions. One is like this:
+
+<MiniRepl client:visible tune={`sound("bd hh sd hh").fast("<2 3>")`} />
+
+and the other is like this:
+
+<MiniRepl client:visible tune={`fast("<2 3>", sound("bd hh sd hh"))`} />
+Generally in Strudel, it's easier to write it the first way - writing the pattern you want to operate on (`sound("bd hh
+sd hh")`), and then writing `.` followed by the function you want to apply to it. (this is called 'method chaining').
+
+So we generally write things like this:
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd hh sd hh").iter(4)
+    .fast("<2 3>").jux(rev)`}
+/>
+
+... but can also write things like this:
+
+<MiniRepl
+  client:visible
+  tune={`jux(rev, fast("<2 3>",
+    iter(4, sound("bd hh sd hh"))))`}
+/>
+
+One reason we generally don't do it the second way is that it gets difficult to keep track of all the brackets !
+
+</Box>
+
+## Combining patterns as though they were functions
+
+One slightly confusing (but useful!) aspect of strudel is that you can feed one pattern into another pattern.
+
+`sound("bd sd hh cp")` is a pattern, and so is `distort("<0.8 1.1>")`.
+
+You can feed the sound into the distortion pattern like this
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd sd hh cp")
+    .distort("<0 1.1>")`}
+/>
+
+This looks like you're feeding one pattern into another a function, but really you're combining two patterns together.
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd sd hh cp")
+    .distort("<0 1.1>")
+    .speed("<1 1.5 2>")`}
+/>
+
+The rule of thumb is that the 'structure' of the outcome is given by the leftmost pattern.
+
+## Using `=>` arrows to turn patterns into functions, and to combine functions
+
+Although the above works to combine patterns, in other cases you can't treat
+patterns as functions. For example, this _doesn't_ work:
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd sd hh cp")
+    .lastOf(3, distort(1.1))`}
+/>
+
+This is because `lastOf` and other functions that take other functions as input
+(`jux`, `every`, `sometimes`, etc), will not accept patterns.
+
+You can fix this by turning the pattern into a function, with some weird syntax:
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd sd hh cp")
+    .lastOf(3, x => x.distort(1.1))`}
+/>
+
+This is also useful when you want to combine two functions together!
+
+For example, say you want to apply both `iter(4)` and `fast(2)` to a pattern
+using `jux()`, so it only happens in one speaker/earphone.
+
+This unfortunately something like the following _won't_ work:
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd sd hh cp")
+    .jux(iter(4).fast(2))`}
+/>
+
+However if we use the magic `=>`, it will:
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd sd hh cp")
+    .jux(x => x.iter(4).fast(2))`}
+/>
+
+In both cases, we are giving a name to the pattern to be transformed, in
+particular we are calling it `x`. With that done, we can apply as many functions
+to `x` as we like.
