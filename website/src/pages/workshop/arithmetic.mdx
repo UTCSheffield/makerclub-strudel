@@ -1,0 +1,79 @@
+---
+title: Adding up numbers to make people dance
+layout: ../../layouts/MainLayout.astro
+---
+
+import { MiniRepl } from '@src/docs/MiniRepl';
+import { midi2note } from '@strudel/core';
+import Box from '@components/Box.astro';
+import QA from '@components/QA';
+
+# Arithmetic !
+
+This is going to be more fun than it sounds!
+
+Adding patterns of numbers together in Strudel is simple + fun. For example,
+with 'add' used to move around notes within a scale:
+
+<MiniRepl
+  client:visible
+  tune={`$: 
+  note("0 1 2 3 1 0 -2 5"
+       .add("<0 4 -4 3>")
+       .scale("C:pentatonic")
+      ).sound("folkharp")
+`}
+/>
+
+<MiniRepl
+  client:visible
+  tune={`note("0 1 2 3 1 0 -2 5"
+       .off(5/16, x => x.add("<0 4 -4 8>"))
+       .scale("C:pentatonic")
+      ).sound("folkharp")
+      `}
+/>
+
+<Box>Try adding `.jux(rev)` to the above..</Box>
+
+You can make long-form melodies by adding together patterns of different lengths:
+
+<MiniRepl
+  client:visible
+  tune={`n("0 1 [- 2] 3 0 - 3 1".add("0 5 2 3 13".pace(4))
+    )
+  .scale("C:mixolydian")
+  .sound("supersaw")
+  .room(0.8).sz(2)
+  ._pianoroll() 
+  `}
+/>
+
+If you're careful, you can also get away with adding notes together directly, without using a particular scale:
+
+<MiniRepl
+  client:visible
+  tune={`note("c2(3,8) c(5,8) d3(5,16) e3(3,8)")
+    // .off(0.125, add(note("12")))
+    // .off(0.25, add(note("< -7 5 12>")))
+    .sound("piano")
+    .slow(4)
+    .legato(2)
+    ._pianoroll()
+      `}
+/>
+
+<Box>Try uncommenting lines, and then (of course) adding a `.jux(rev)`</Box>
+
+You can use this technique on any pattern of numbers, for example when slicing breakbeats with `scrub`:
+
+<MiniRepl
+  client:visible
+  tune={`samples('github:sonidosingapura/blu-mar-ten')
+s("bmt_breaks:1/2").fit().scrub("0.5@3 0.125@5 0@3 0@1 0.625@2 0.25@2"
+                                .add("0 0.125 0.25".pace(8))
+                               ).slow(2)
+`}
+/>
+
+You can use `sub`, `mul` and `div`, for subtraction, multiplication and division respectively, in the same way.

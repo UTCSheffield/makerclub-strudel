@@ -8,23 +8,7 @@ import { midi2note } from '@strudel/core';
 import Box from '@components/Box.astro';
 import QA from '@components/QA';
 
-# More live-coding with Strudel
-
-- Let's talk about functions!
-- Basic arithmetic
-- Aligning patterns
-- Carnatic rhythms
-  - shrink/expand
-  - grow
-- Into the grid
-  - tuples
-  - syncopation
-- Beyond the grid
-  - press / pressBy
-  - off-grid / swing
-- Anything else?
-
-## Let's talk about functions!
+# Functions and Patterns
 
 <Box>
 Functions are a bit of a heavy topic to start the day with, sorry.
@@ -32,6 +16,8 @@ Functions are a bit of a heavy topic to start the day with, sorry.
 It's a fundamental topic though - not covered too well in docs. Hopefully this will help clear things up. See how you go!
 
 </Box>
+
+## Let's talk about functions!
 
 **In strudel, almost everything is either a pattern, or a function.**
 
@@ -42,7 +28,7 @@ What's the difference between a pattern and a function?
 
 So, you can think of a function as an _incomplete_ pattern - you need to give it one or more patterns before it becomes a new pattern
 
-These are functions:
+These are examples of functions:
 
 ```
 sound fast rev iter jux
@@ -123,18 +109,56 @@ One reason we generally don't do it the second way is that it gets difficult to 
 
 </Box>
 
-## Combining patterns as though they were functions
+## Control patterns
 
-One slightly confusing (but useful!) aspect of strudel is that you can feed one pattern into another pattern.
+Let's talk about a particular kind of pattern - control patterns. They are used
+to pattern different aspects of sound.
 
-`sound("bd sd hh cp")` is a pattern, and so is `distort("<0.8 1.1>")`.
+Here is the complete list of functions for making control patterns:
 
-You can feed the sound into the distortion pattern like this
+```
+accelerate activeLabel amp analyze anchor att attack bandf bandq bank bbexpr
+bbst begin binshift bp bpa bpattack bpd bpdecay bpe bpenv bpf bpq bpr bprelease
+bps bpsustain byteBeatExpression byteBeatStartTime ccn ccv ch channel channels
+chord clip coarse color comb compressor compressorAttack compressorKnee
+compressorRatio compressorRelease cps crush ctf ctlNum ctranspose curve cut
+cutoff dec decay degree delay delayfb delayfeedback delaysync delayt delaytime
+deltaSlide density det detune dfb dict dictionary dist distort djf drive dry dt
+duck duckatt duckattack duckdepth duckorbit dur duration end enhance expression
+fadeInTime fadeOutTime fadeTime fanchor fft fm fmattack fmdecay fmenv fmh fmi
+fmrelease fmsustain fmvelocity fmwave frameRate frames freeze freq fshift
+fshiftnote fshiftphase ftype gain gat gate harmonic hbrick hcutoff hold hours hp
+hpa hpattack hpd hpdecay hpe hpenv hpf hpq hpr hprelease hps hpsustain
+hresonance imag ir iresponse kcutoff krush label lbrick legato leslie lfo lock
+loop loopBegin loopEnd loopb loope lp lpa lpattack lpd lpdecay lpe lpenv lpf lpq
+lpr lprelease lps lpsustain lrate lsize markcss midibend midichan midicmd
+midimap midiport miditouch minutes mode mtranspose n noise note nrpnn nrpv nudge
+octave octaveR octaves octer octersub octersubsub offset orbit overgain
+overshape pan panchor panorient panspan pansplay panwidth partials patt pattack
+pcurve pdec pdecay penv ph phasdp phaser phasercenter phaserdepth phaserrate
+phasersweep phc phd phs pitchJump pitchJumpTime polyTouch postgain prel prelease
+progNum psus psustain pw pwrate pwsweep rate rdim real rel release repeatTime
+resonance rfade ring ringdf ringf rlp room roomdim roomfade roomlp roomsize
+rsize s scram seconds semitone shape size slide smear songPtr sound source speed
+spread squiz src stepsPerOctave stretch sus sustain sustainpedal sysexdata
+sysexid sz trem tremdepth tremolo tremolodepth tremolophase tremoloshape
+tremoloskew tremolosync tremphase tremshape tremskew tremsync triode tsdelay uid
+unison unit v val velocity vib vibmod vibrato vmod voice vowel waveloss xsdelay
+zcrush zdelay zmod znoise zrand zzfx
+```
+
+So, `sound("bd sd hh cp")` is a control pattern, and so is `distort("<0.8
+1.1>")`.
+
+One super useful aspect of strudel is that you can feed one control pattern into
+another one.
+
+For example, you can feed a 'sound' contrl pattern into a 'distortion' control pattern like this
 
 <MiniRepl
   client:visible
   tune={`sound("bd sd hh cp")
-    .distort("<0 1.1>")`}
+  .distort("<0 1.1>")`}
 />
 
 This looks like you're feeding one pattern into another a function, but really you're combining two patterns together.
@@ -142,27 +166,27 @@ This looks like you're feeding one pattern into another a function, but really y
 <MiniRepl
   client:visible
   tune={`sound("bd sd hh cp")
-    .distort("<0 1.1>")
-    .speed("<1 1.5 2>")`}
+  .distort("<0 1.1>")
+  .speed("<1 1.5 2>")`}
 />
 
-The rule of thumb is that the 'structure' of the outcome is given by the leftmost pattern.
+When doing this, the rule of thumb is that the 'structure' of the outcome is
+given by the leftmost pattern (we'll talk about how to change this later).
 
 ## Using `=>` arrows to turn patterns into functions, and to combine functions
 
-Although the above works to combine patterns, in other cases you can't treat
+Although the above works, annoyingly in other cases you can't treat control
 patterns as functions. For example, this _doesn't_ work:
 
-<MiniRepl
-  client:visible
-  tune={`sound("bd sd hh cp")
-    .lastOf(3, distort(1.1))`}
-/>
+```
+sound("bd sd hh cp")
+.lastOf(3, distort(1.1))
+```
 
-This is because `lastOf` and other functions that take other functions as input
-(`jux`, `every`, `sometimes`, etc), will not accept patterns.
+This is because `lastOf` (and other functions that take other functions as input
+like `jux`, `every`, `sometimes`, etc), will not accept control patterns.
 
-You can fix this by turning the pattern into a function, with some weird syntax:
+You can fix this by turning the pattern into a function, using =>:
 
 <MiniRepl
   client:visible
@@ -170,20 +194,23 @@ You can fix this by turning the pattern into a function, with some weird syntax:
     .lastOf(3, x => x.distort(1.1))`}
 />
 
+<Box>The `=>` arrow works by giving a name to the pattern to be transformed. In the above, we are calling it `x`.</Box>
+
 This is also useful when you want to combine two functions together!
 
 For example, say you want to apply both `iter(4)` and `fast(2)` to a pattern
 using `jux()`, so it only happens in one speaker/earphone.
 
-This unfortunately something like the following _won't_ work:
+Unfortunately the following _won't_ work:
 
-<MiniRepl
-  client:visible
-  tune={`sound("bd sd hh cp")
-    .jux(iter(4).fast(2))`}
-/>
+```
 
-However if we use the magic `=>`, it will:
+sound("bd sd hh cp")
+.jux(iter(4).fast(2))
+
+```
+
+However if we use the magic `=>`, it will!
 
 <MiniRepl
   client:visible
@@ -191,6 +218,12 @@ However if we use the magic `=>`, it will:
     .jux(x => x.iter(4).fast(2))`}
 />
 
-In both cases, we are giving a name to the pattern to be transformed, in
-particular we are calling it `x`. With that done, we can apply as many functions
-to `x` as we like.
+We can use control patterns in this way too:
+
+<MiniRepl
+  client:visible
+  tune={`sound("bd sd hh cp")
+    .jux(x => x.iter(4).fast(2).speed(2))`}
+/>
+
+It takes a while to get used to `=>`, but it is super useful when you get the hang of it.

@@ -1,0 +1,91 @@
+---
+title: Aligning patterns
+layout: ../../layouts/MainLayout.astro
+---
+
+import { MiniRepl } from '@src/docs/MiniRepl';
+import { midi2note } from '@strudel/core';
+import Box from '@components/Box.astro';
+import QA from '@components/QA';
+
+# Aligning patterns
+
+Arithmetic options have 'helper' functions for controlling how patterns are
+aligned.
+
+`in` is the default, where the pattern on the right is added 'in' to the structure of the one on the left.
+
+<MiniRepl
+  client:visible
+  tune={`note("0 3 1 2 [3 4]"
+     .add.in("0 4 3")
+     .scale("C:pentatonic")
+    ).sound("supersaw")
+      ._pianoroll()`}
+/>
+
+You can also do the opposite, with 'out':
+
+<MiniRepl
+  client:visible
+  tune={`note("0 2 1 2 [3 4]"
+     .add.out("0 4 3")
+     .scale("C:pentatonic")
+    ).sound("supersaw")
+      ._pianoroll()`}
+/>
+
+... or mix the structure of both patterns with 'mix':
+
+<MiniRepl
+  client:visible
+  tune={`note("0 2 1 2 [3 4]"
+     .add.mix("0 4 3")
+     .scale("C:pentatonic")
+    ).sound("supersaw")
+      ._pianoroll()`}
+/>
+
+Or 'squeeze' the structure on the right into each value on the left:
+
+<MiniRepl
+  client:visible
+  tune={`note("0 2 1 2 [3 4]"
+     .add.squeeze("0 4 3")
+     .scale("C:pentatonic")
+    ).sound("supersaw")
+      ._pianoroll()`}
+/>
+
+Or vice-versa, with 'squeezeout':
+
+<MiniRepl
+  client:visible
+  tune={`note("0 2 1 2 [3 4]"
+     .add.squeezeout("0 4 3")
+     .scale("C:pentatonic")
+    ).sound("supersaw")
+      ._pianoroll()`}
+/>
+
+Or do a 'polymetric' alignment, there the values are aligned between the patterns:
+
+<MiniRepl
+  client:visible
+  tune={`note("0 2 1 2 [3 4]"
+     .add.poly("0 4 3")
+     .scale("C:pentatonic")
+    ).sound("supersaw")
+      ._pianoroll()`}
+/>
+
+These alignment functions are also available on their own, so they can be used
+with control patterns too:
+
+<MiniRepl
+  client:visible
+  tune={`
+  sound("bd - sd cp bd*2 - mt ht".slow(2))
+  .squeeze(hpf("1 500 - 4000"))
+  .speed(2)`}
+/>

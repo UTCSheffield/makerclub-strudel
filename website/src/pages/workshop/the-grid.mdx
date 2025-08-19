@@ -1,0 +1,36 @@
+---
+title: The grid (and beyond)
+layout: ../../layouts/MainLayout.astro
+---
+
+import { MiniRepl } from '@src/docs/MiniRepl';
+import { midi2note } from '@strudel/core';
+import Box from '@components/Box.astro';
+import QA from '@components/QA';
+
+# The grid (and beyond)
+
+I love grids! But they can be a bit omnipresent in Western music. How can we look beyond them?
+
+## Into the grid
+
+We can break down and mess up 'cells' in the grid
+
+### tuples
+
+Triplets and friends, with `[]` and `@`!
+
+### syncopation
+
+![](/img/metrical-weight.png)
+
+Syncopation is about emphasing 'weak' beats
+
+`press` / `pressBy` can be helpful with this!
+
+## Beyond the grid
+
+We can also loosen things up a bit
+
+- Add some 'swing', e.g. with `early` / `late`
+- Try out the new `euclidish` function
