@@ -11,7 +11,7 @@ import tailwind from '@astrojs/tailwind';
 import AstroPWA from '@vite-pwa/astro';
 
 const site = `https://utcsheffield.github.io/`; // root url without a path
-const base = '/makerclub-strudel/'; // base path of the strudel site
+const base = 'makerclub-strudel/'; // base path of the strudel site
 const baseNoTrailing = base.endsWith('/') ? base.slice(0, -1) : base;
 
 // this rehype plugin fixes relative links
