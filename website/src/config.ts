@@ -77,7 +77,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Lights', link: 'workshop/lights' },
       { text: 'Epic Hexameter', link: 'workshop/epic-hexameter' },
     ],
-    'UTC Maker Club': [
+    'UTC MakerClub': [
       { text: 'Live-coding with Strudel', link: 'workshop/makerclub' },
       { text: 'Functions and Patterns', link: 'workshop/functions' },
       { text: 'Adding up numbers to make people dance', link: 'workshop/arithmetic' },
